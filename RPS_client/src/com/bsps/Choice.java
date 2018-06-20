@@ -1,10 +1,10 @@
 package com.bsps;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-
-import javax.management.BadAttributeValueExpException;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum Choice {
+    QUIT("Give up", 0),
     ROCK("rock", 1),
     PAPER("paper", 2),
     SCISSORS("scissors", 3);
@@ -17,34 +17,26 @@ public enum Choice {
     public String getName() {
         return name;
     }
-
     public int getIndex() {
         return index;
     }
 
-    public static OtpErlangAtom toAtom(Choice choice) {
-        return new OtpErlangAtom(choice.name);
-    }
-    public static Choice fromAtom(OtpErlangAtom atom) throws BadAttributeValueExpException {
-        Choice choice;
-
-        switch (atom.toString()) {
-            case "paper":    choice = PAPER;    break;
-            case "scissors": choice = SCISSORS; break;
-            case "rock" :    choice = ROCK;     break;
-            default: throw new BadAttributeValueExpException(atom);
+    private static final Map<Integer,Choice> mapIndex;
+    private static final Map<String, Choice> mapName;
+    static {
+        mapIndex = new HashMap<>();
+        mapName = new HashMap<>();
+        for (Choice choice: Choice.values()) {
+            mapIndex.put(choice.index, choice);
+            mapName.put(choice.name, choice);
         }
-        return choice;
     }
-    public static Choice fromIndex(int i) throws BadAttributeValueExpException {
-        Choice choice;
 
-        switch (i) {
-            case 1: choice = ROCK;     break;
-            case 2: choice = PAPER;    break;
-            case 3: choice = SCISSORS; break;
-            default: throw new BadAttributeValueExpException(i);
-        }
-        return choice;
+    public static Choice findByIndex(int i) {
+        return mapIndex.get(i);
+    }
+
+    public static Choice findByName(String name) {
+        return mapName.get(name);
     }
 }
